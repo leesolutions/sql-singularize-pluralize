@@ -1,0 +1,4 @@
+To Do's:
+- Update CRL for round bracketed backreference in replace method
+  Steve's CRL for reg exp methods fails on reg replace for round bracketed backreference 
+  cf. http://www.codeproject.com/KB/string/SqlRegEx.aspx?msg=3683405#xx3683405xx

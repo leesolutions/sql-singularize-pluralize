@@ -1,0 +1,10 @@
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\bin\Debug\SqlRegEx.dll
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\bin\Debug\SqlRegEx.pdb
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\obj\Debug\ResolveAssemblyReference.cache
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\obj\Debug\SqlRegEx.dll
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\obj\Debug\SqlRegEx.pdb
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\bin\Release\SqlRegEx.dll
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\bin\Release\SqlRegEx.pdb
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\obj\Release\ResolveAssemblyReference.cache
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\obj\Release\SqlRegEx.dll
+D:\DropBox\My Dropbox\QualityMarine\sql-singularize-pluralize\SqlRegEx\SqlRegEx\obj\Release\SqlRegEx.pdb
