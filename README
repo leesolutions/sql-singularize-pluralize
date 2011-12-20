@@ -1,14 +1,14 @@
 Rails inflections based singularize and pluralize methods for TSQL.
 
 How to use:
-- select master.dbo.Pluralize('car')
-  outputs: 'cars'
+- select master.dbo.Pluralize('person')
+  outputs: 'people'
 
 Config:
 - download SqlRegEx.dll into c:\
-- update database ref on top of install.sql file
-- run install.sql on SQL Server 2005 instance
-- test: select dbo.Pluralize('car')
+- update database ref on top of install.sql file, default set to master
+- run install.sql on SQL Server 2005 instance. this will return a number of test results.
+- test: select dbo.Pluralize('person')
 - add regular expressions for singular, plural, irregular and uncountable into tsql_singularize_pluralize table. NOTE: use $1 for replace backreferences.
 
 

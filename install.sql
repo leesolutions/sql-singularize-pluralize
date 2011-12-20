@@ -48,19 +48,6 @@ GO
 CREATE FUNCTION [dbo].[ufn_RegExSplit]   (@Input NVARCHAR(MAX), @Pattern NVARCHAR(MAX), @IgnoreCase BIT)								RETURNS TABLE (Match NVARCHAR(MAX))										AS EXTERNAL NAME SqlRegEx.[SqlClrTools.SqlRegEx].RegExSplit
 GO
 
---Execute sample cases
-SELECT dbo.ufn_RegExIsMatch('Hello World', 'w', 1)			--Ignores Case
-SELECT dbo.ufn_RegExIsMatch('Hello World', 'w', 0)			--Case Sensitive
-
-SELECT dbo.ufn_RegExReplace('Hello -World', '$', '$1J', 1)		--Ignores Case
-SELECT dbo.ufn_RegExReplace('Hello World', 'h', 'J', 0)		--Case Sensitive
-
-SELECT * FROM dbo.ufn_RegExMatches('Hello World', 'L', 1)	--Ignores Case
-SELECT * FROM dbo.ufn_RegExMatches('Hello World', 'L', 0)	--Case Sensitive
-
-SELECT * FROM dbo.ufn_RegExSplit('Hello World', 'L', 1)		--Ignores Case
-SELECT * FROM dbo.ufn_RegExSplit('Hello World', 'L', 0)		--Case Sensitive
-go
 
 
 
@@ -159,18 +146,27 @@ begin
 	declare @out varchar(1000), @find varchar(1000), @replace varchar(1000), @id int, @new varchar(1000)
 	declare @rgs table ( id int, type varchar(15), find varchar(1000), replace varchar(1000) )
 
-	insert into @rgs select * from dbo.tsql_singularize_pluralize where type='plural'
+	if exists(select * from dbo.tsql_singularize_pluralize where type='uncountable' and find=@string)
+		select @out = @string
 
-	while exists(select top 1 id from @rgs)
+	if exists(select * from dbo.tsql_singularize_pluralize where type='irregular' and find=@string)
+		select top 1 @out = replace from dbo.tsql_singularize_pluralize where type='irregular' and find=@string
+
+	if @out is null
 	begin
-		select top 1 @find=find, @replace=replace, @id=id from @rgs order by id desc
-		select @new = master.dbo.ufn_RegExReplace(@string, @find, @replace, 1)
-		if @new<>@string
+		insert into @rgs select * from dbo.tsql_singularize_pluralize where type='plural'
+
+		while exists(select top 1 id from @rgs)
 		begin
-			select @out = @new
-			delete from @rgs
+			select top 1 @find=find, @replace=replace, @id=id from @rgs order by id desc
+			select @new = master.dbo.ufn_RegExReplace(@string, @find, @replace, 1)
+			if @new<>@string
+			begin
+				select @out = @new
+				delete from @rgs
+			end
+			delete from @rgs where id=@id
 		end
-		delete from @rgs where id=@id
 	end
 
 	if @out is null
@@ -192,18 +188,27 @@ begin
 	declare @out varchar(1000), @find varchar(1000), @replace varchar(1000), @id int, @new varchar(1000)
 	declare @rgs table ( id int, type varchar(15), find varchar(1000), replace varchar(1000) )
 
-	insert into @rgs select * from dbo.tsql_singularize_pluralize where type='singular'
+	if exists(select * from dbo.tsql_singularize_pluralize where type='uncountable' and find=@string)
+		select @out = @string
 
-	while exists(select top 1 id from @rgs)
+	if exists(select * from dbo.tsql_singularize_pluralize where type='irregular' and replace=@string)
+		select top 1 @out = find from dbo.tsql_singularize_pluralize where type='irregular' and replace=@string
+
+	if @out is null
 	begin
-		select top 1 @find=find, @replace=replace, @id=id from @rgs order by id desc
-		select @new = master.dbo.ufn_RegExReplace(@string, @find, @replace, 1)
-		if @new<>@string
+		insert into @rgs select * from dbo.tsql_singularize_pluralize where type='singular'
+
+		while exists(select top 1 id from @rgs)
 		begin
-			select @out = @new
-			delete from @rgs
+			select top 1 @find=find, @replace=replace, @id=id from @rgs order by id desc
+			select @new = master.dbo.ufn_RegExReplace(@string, @find, @replace, 1)
+			if @new<>@string
+			begin
+				select @out = @new
+				delete from @rgs
+			end
+			delete from @rgs where id=@id
 		end
-		delete from @rgs where id=@id
 	end
 
 	if @out is null
@@ -213,15 +218,48 @@ begin
 end
 go
 
-select convert(varchar(100),getdate(),109)
-exec master.dbo.sp_Pluralize @string = 'goby'
-select master.dbo.ufn_RegExReplace('goby', '([^aeiouy]|qu)y$', '$1', 0)
-select convert(varchar(100),getdate(),109)
+-- load function into memory
+print master.dbo.Pluralize('class')
+print master.dbo.Singularize('classes')
 
-select convert(varchar(100),getdate(),109)
-select master.dbo.Pluralize('goby')
-select convert(varchar(100),getdate(),109)
+-- run some tests with times
+declare @start datetime, @start_all datetime
+select @start_all = getdate()
 
-select convert(varchar(100),getdate(),109)
-select master.dbo.Singularize('gobies')
-select convert(varchar(100),getdate(),109)
+select @start = getdate()
+select 'car', master.dbo.Pluralize('car')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'cars', master.dbo.Singularize('cars')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'person', master.dbo.Pluralize('person')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'people', master.dbo.Singularize('people')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'sheep', master.dbo.Pluralize('sheep')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'class', master.dbo.Pluralize('class')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'classes', master.dbo.Singularize('classes')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'goby', master.dbo.Pluralize('goby')
+select convert(varchar(100),getdate()-@start,121)
+
+select @start = getdate()
+select 'gobies', master.dbo.Singularize('gobies')
+select convert(varchar(100),getdate()-@start,121)
+
+select convert(varchar(100),getdate()-@start_all,121)
