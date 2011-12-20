@@ -6,12 +6,9 @@ How to use:
 
 Config:
 - download SqlRegEx.dll into c:\
+- update database ref on top of install.sql file
 - run install.sql on SQL Server 2005 instance
-- test: select master.dbo.Pluralize('car')
-- add regular expressions for singular, plural, irregular and uncountable into tsql_singularize_pluralize table.
+- test: select dbo.Pluralize('car')
+- add regular expressions for singular, plural, irregular and uncountable into tsql_singularize_pluralize table. NOTE: use $1 for replace backreferences.
 
-To Do's:
-- Update CRL to support round bracketed backreference in replace method
-  Steve's CRL for reg exp methods fails on reg replace for round bracketed backreference 
-  cf. http://www.codeproject.com/KB/string/SqlRegEx.aspx?msg=3683405#xx3683405xx
 
